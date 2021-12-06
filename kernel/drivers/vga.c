@@ -70,6 +70,22 @@ int vga_set_at_position(char c, int col, int row, unsigned char color) {
     vidmem[offset+1] = color;
     offset += 2;
   }
+
+  // scroll if necessary
+  if (offset >= VGA_ROWS * VGA_COLS * 2) {
+    for (int i = 1; i < VGA_ROWS * 2; i++) {
+      memcopy(
+          VGA_ADDRESS + get_offset(0, i),
+          VGA_ADDRESS + get_offset(0, i - 1),
+          VGA_COLS * 2);
+    }
+    char *last_line = get_offset(0, VGA_ROWS-1) + VGA_ADDRESS;
+    for (int i = 0; i < VGA_COLS * 2; i++) last_line[i] = 0;
+
+    offset -= 2 * VGA_COLS;
+  }
+
+
   vga_set_position(offset);
   return offset;
 }
