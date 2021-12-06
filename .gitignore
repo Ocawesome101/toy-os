@@ -3,3 +3,4 @@ toolchain/gcc*
 toolchain/gdb*
 *.bin
 *.o
+*.elf
