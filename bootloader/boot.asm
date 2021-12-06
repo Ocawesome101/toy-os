@@ -19,11 +19,11 @@ call disk_load
 call switch_to_pm
 jmp $
 
-%include "textio.asm"
-%include "diskio.asm"
-%include "gdt.asm"
-%include "to-protected-mode.asm"
-%include "32bit-textio.asm"
+%include "bootloader/textio.asm"
+%include "bootloader/diskio.asm"
+%include "bootloader/gdt.asm"
+%include "bootloader/to-protected-mode.asm"
+%include "bootloader/32bit-textio.asm"
 
 [bits 32]
 BEGIN_PM:
