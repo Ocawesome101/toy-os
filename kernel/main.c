@@ -1,8 +1,7 @@
-int my_function() {
-  return 0xbaba;
-}
+#include "video.c"
 
 void main() {
-  char* vidmem = (char*) 0xb8000;
-  *vidmem = 'X';
+  *(char*)(0xb8000) = 'X';
+  vid_clear();
+  vid_writeAt(0, "Hello, kernel world!");
 }

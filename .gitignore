@@ -1,3 +1,4 @@
 toolchain/binutils*
 toolchain/gcc*
+toolchain/gdb*
 *.bin
