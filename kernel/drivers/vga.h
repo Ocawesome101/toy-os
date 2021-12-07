@@ -13,6 +13,9 @@
 
 unsigned char vga_pack_color(char fg, char bg);
 void clear_screen();
+int putchar_at(char c, int col, int row);
+void putchar(char c);
+void delchar();
 void putstr_at(char *str, int col, int row);
 void putstr(char *str);
 

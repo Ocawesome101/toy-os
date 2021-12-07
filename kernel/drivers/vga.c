@@ -46,6 +46,7 @@ void vga_set_position(int offset) {
   vga_set_raw_position(offset / 2);
 }
 
+int cursor_enabled = 0;
 int vga_set_at_position(char c, int col, int row, unsigned char color) {
   unsigned char *vidmem = (unsigned char*) VGA_ADDRESS;
   if (!color) color = 0x0f;
@@ -81,18 +82,20 @@ int vga_set_at_position(char c, int col, int row, unsigned char color) {
           VGA_COLS * 2);
     }
     char *last_line =  (unsigned char*)get_offset(0, VGA_ROWS-1) + VGA_ADDRESS;
-    for (int i = 0; i < VGA_COLS * 2; i++) last_line[i] = 0;
+    for (int i = 0; i < VGA_COLS; i++) {
+      last_line[i*2] = 0;
+      last_line[i*2+1] = 0x0f;
+    }
 
     offset -= 2 * VGA_COLS;
   }
-
 
   vga_set_position(offset);
   return offset;
 }
 
 // public functions
-void putstr_at(char* str, int col, int row) {
+int putchar_at(char c, int col, int row) {
   int offset;
   if (col >= 0 && row >= 0) {
     offset = get_offset(col, row);
@@ -102,15 +105,33 @@ void putstr_at(char* str, int col, int row) {
     col = get_offset_col(offset);
   }
 
+  return vga_set_at_position(c, col, row, 0x0f);
+}
+
+void putstr_at(char* str, int col, int row) {
+  int offset;
+
   for (int i = 0; str[i] != 0; i++) {
-    offset = vga_set_at_position(str[i], col, row, 0x0f);
+    offset = putchar_at(str[i], col, row);
     row = get_offset_row(offset);
     col = get_offset_col(offset);
   }
 }
 
+void putchar(char c) {
+  putchar_at(c, -1, -1);
+}
+
 void putstr(char* str) {
   putstr_at(str, -1, -1);
+}
+
+void delchar() {
+  int offset = vga_get_position();
+  int row = get_offset_row(offset);
+  int col = get_offset_col(offset);
+  putchar_at(' ', col - 1, row);
+  vga_set_position(get_offset(col - 1, row));
 }
 
 void clear_screen() {
