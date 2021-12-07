@@ -8,6 +8,8 @@
 // very simple memory allocator
 // each bit in this array marks a single page as used or free.
 char used[PAGES/8];
+// size of each page, in pages
+char sizes[PAGES];
 
 int isfree(unsigned int i) {
   int byte = i / 8;
@@ -20,6 +22,9 @@ int flipstatus(unsigned int i) {
 }
 
 void* kmalloc(int size) {
+  if (size > PAGE_SIZE*256) {
+    return -1;
+  }
   int npages = size / PAGE_SIZE + 1;
   int contig = 0, offset = 0;
   for (unsigned int i = 0; i < PAGES && contig < npages; i++) {
@@ -32,12 +37,22 @@ void* kmalloc(int size) {
   for (unsigned int i = 0; i <= contig; i++) {
     flipstatus(offset + i);
   }
+  sizes[offset] = contig;
+  offset *= PAGE_SIZE;
   memset((char*) offset, 0, npages * PAGE_SIZE);
   return (void*) offset;
 }
 
 int kfree(void* ptr) {
-  
+  int offset = (int) ptr / PAGE_SIZE + 1;
+  if (!sizes[offset]) {
+    kpanic("Double free()\n");
+  }
+  for (int i = 0; i < sizes[offset]; i++) {
+    flipstatus(offset + i);
+  }
+  sizes[offset] = 0;
+  return;
 }
 
 int vkprintf(char* format, __builtin_va_list argp) {

@@ -4,7 +4,7 @@
 #include "../arch/x86/isr.h"
 #include "vga.h"
 
-char input[256];
+char input[INPUTBUFSIZE];
 int inpos = 0;
 
 int shifted = 0;
@@ -14,8 +14,10 @@ static void keyboard_callback(registers_t regs) {
   if (c == '\x08') {
     delchar();
     input[inpos--] = '\0';
+    if (inpos < 0) inpos = INPUTBUFSIZE - 1;
   } else if (c) {
     putchar((input[inpos++] = c));
+    if (inpos == INPUTBUFSIZE) inpos = 0;
   } else if (scancode == 0x2A) {
     shifted = 1;
   } else if (scancode == 0xAA) {

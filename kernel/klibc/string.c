@@ -47,3 +47,21 @@ int strcmp(char* a, char* b) {
   }
   return a[i] - b[i];
 }
+
+char* strtok_r(char* s, char delim, strtok_Save* saveptr) {
+  if (s == 0) {
+    s = saveptr->s;
+  } else {
+    saveptr->s = s;
+    saveptr->o = 0;
+  }
+  int i;
+  // skip delimiters
+  for (i = saveptr->o; s[i] == delim; i++) {}
+  // hax
+  for ( ; s[i] != '\0' && s[i] != delim; i++) {}
+  s[i] = '\0';
+  saveptr->o = i+1;
+  
+  return (char*) s + i;
+}

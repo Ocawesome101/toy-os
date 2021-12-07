@@ -10,15 +10,14 @@ void kernel_start() {
   klog("a number: %d\n", 42);
   klog("a string: %s\n", "text");
   klog("a char: %c\n", 'b');
-  klog("a bad format: %e");
   isr_install();
   //init_timer(1);
   // enable interrupts
   asm volatile("sti");
   init_keyboard();
-  char input[255];
+  char tinput[255];
   while (1) {
-    //putstr("$ ");
-    
+    putstr("KNL> ");
+    readline(tinput);
   }
 }
