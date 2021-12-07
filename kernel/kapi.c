@@ -3,6 +3,7 @@
 #include "kapi.h"
 #include "drivers/vga.h"
 #include "klibc/string.h"
+#include "klibc/mem.h"
 
 // very simple memory allocator
 // each bit in this array marks a single page as used or free.
@@ -28,9 +29,15 @@ void* kmalloc(int size) {
   if (contig == 0) {
     kpanic("Out of free pages for malloc()!");
   }
+  for (unsigned int i = 0; i <= contig; i++) {
+    flipstatus(offset + i);
+  }
+  memset((char*) offset, 0, npages * PAGE_SIZE);
+  return (void*) offset;
 }
 
 int kfree(void* ptr) {
+  
 }
 
 int vkprintf(char* format, __builtin_va_list argp) {
@@ -49,7 +56,7 @@ int vkprintf(char* format, __builtin_va_list argp) {
       } else if (*format == 's') {
         putstr(__builtin_va_arg(argp, char*));
       } else {
-        putstr("kprintf format not implemented\n");
+        kpanic("kprintf format not implemented\n");
       }
     } else {
       putchar(*format);
@@ -82,6 +89,9 @@ int kpanic(char* format, ...) {
   __builtin_va_start(argp, format);
   // disable interrupts
   asm volatile("cli");
+  klog("\n");
   klog("KERNEL PANIC\n");
   klog(format, argp);
+  klog("=== stopping ===");
+  while (1) {}
 }

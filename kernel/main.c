@@ -9,6 +9,8 @@ void kernel_start() {
   klog("Kernel v0.\n", 0, 0);
   klog("a number: %d\n", 42);
   klog("a string: %s\n", "text");
+  klog("a char: %c\n", 'b');
+  klog("a bad format: %e");
   isr_install();
   //init_timer(1);
   // enable interrupts
