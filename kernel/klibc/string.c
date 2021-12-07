@@ -1,4 +1,5 @@
 #include "string.h"
+#include "../kapi.h"
 
 // reverse a string
 char* strrev_i(char* s, int len) {
@@ -48,20 +49,21 @@ int strcmp(char* a, char* b) {
   return a[i] - b[i];
 }
 
-char* strtok_r(char* s, char delim, strtok_Save* saveptr) {
-  if (s == 0) {
-    s = saveptr->s;
-  } else {
-    saveptr->s = s;
-    saveptr->o = 0;
+// nonconformant behavior
+char* strtok(char* s, char* words[]) {
+  words[0] = kmalloc(MAX_TOK_LEN);
+  int len = strlen(s);
+  int i = 0, alen = 0, word = 0, instr = 0;
+  for (i = 0; i < len; i++) {
+    if (s[i] == ' ' && alen > 0 && (i+1) < len && instr == 0) {
+      words[word][alen] = '\0';
+      word++;
+      alen = 0;
+      words[word] = kmalloc(MAX_TOK_LEN);
+
+      if (word > MAX_WORDS) {
+        kpanic("word limit of %d exceeded\n", MAX_WORDS);
+      }
+    }
   }
-  int i;
-  // skip delimiters
-  for (i = saveptr->o; s[i] == delim; i++) {}
-  // hax
-  for ( ; s[i] != '\0' && s[i] != delim; i++) {}
-  s[i] = '\0';
-  saveptr->o = i+1;
-  
-  return (char*) s + i;
 }

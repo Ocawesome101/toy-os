@@ -16,6 +16,6 @@ char* readline(char* buf) {
   int i = 0;
   while ((buf[i++] = readc()) != '\n') {}
   // replace trailing newline
-  buf[i] = '\0';
+  buf[--i] = '\0';
   return buf;
 }

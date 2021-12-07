@@ -3,6 +3,7 @@
 #include "arch/x86/idt.h"
 #include "drivers/keyboard.h"
 #include "kapi.h"
+#include "klibc/string.h"
 
 void kernel_start() {
   clear_screen();
@@ -19,5 +20,9 @@ void kernel_start() {
   while (1) {
     putstr("KNL> ");
     readline(tinput);
+    kprintf("Got input '%s'\n", tinput);
+    if (strcmp(tinput, "END") == 0) {
+      kpanic("got END!\n");
+    }
   }
 }

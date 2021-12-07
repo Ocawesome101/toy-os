@@ -107,6 +107,14 @@ int kpanic(char* format, ...) {
   klog("\n");
   klog("KERNEL PANIC\n");
   klog(format, argp);
-  klog("=== stopping ===");
-  while (1) {}
+  while (1) {
+    klog("=== stopping ===");
+    asm volatile("hlt");
+  }
+}
+
+unsigned int* __stack_chk_guard = 0xdeadbeef;
+__attribute__((noreturn))
+void __stack_chk_fail(void) {
+  kpanic("Stack smashing detected");
 }
