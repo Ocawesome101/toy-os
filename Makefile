@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c kernel/drivers/*.c)
-HEADERS = $(wildcard kernel/*.h kernel/drivers/*.h)
+C_SOURCES = $(wildcard kernel/*.c kernel/drivers/*.c kernel/arch/x86/*.c)
+HEADERS = $(wildcard kernel/*.h kernel/drivers/*.h kernel/arch/x86/*.h)
 # Nice syntax for file extension replacement
 OBJ = ${C_SOURCES:.c=.o}
 
@@ -15,11 +15,11 @@ os-image.bin: bootloader/boot.bin kernel.bin
 
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
-kernel.bin: kernel/entry.o ${OBJ}
+kernel.bin: kernel/arch/x86/entry.o kernel/arch/x86/interrupts.o ${OBJ}
 	i386-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
 
 # Used for debugging purposes
-kernel.elf: kernel/entry.o ${OBJ}
+kernel.elf: kernel/arch/x86/entry.o kernel/arch/x86/interrupts.o ${OBJ}
 	i386-elf-ld -o $@ -Ttext 0x1000 $^ 
 
 run: os-image.bin
@@ -43,4 +43,5 @@ debug: os-image.bin kernel.elf
 
 clean:
 	rm -rf *.bin *.dis *.o os-image.bin *.elf
-	rm -rf kernel/*.o boot/*.bin kernel/drivers/*.o boot/*.o
+	rm -rf kernel/*.o bootloader/*.bin kernel/drivers/*.o bootloader/*.o
+	rm -rf kernel/arch/x86/*.o

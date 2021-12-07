@@ -1,5 +1,7 @@
 #include "drivers/vga.h"
 #include "util.h"
+#include "arch/x86/isr.h"
+#include "arch/x86/idt.h"
 
 void main() {
   //vga_set_raw_position(vga_get_raw_position(), 'X', 0x1f);
@@ -11,4 +13,7 @@ void main() {
     putstr(str);
     putstr("\n");
   }
+  isr_install();
+  __asm__ __volatile__("int $2");
+  __asm__ __volatile__("int $3");
 }
