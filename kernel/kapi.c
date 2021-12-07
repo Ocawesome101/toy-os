@@ -33,10 +33,7 @@ void* kmalloc(int size) {
 int kfree(void* ptr) {
 }
 
-int kprintf(char* format, ...) {
-  // TODO: don't use GCC builtins
-  __builtin_va_list argp;
-  __builtin_va_start(argp, format);
+int vkprintf(char* format, __builtin_va_list argp) {
   while (*format != '\0') {
     if (*format == '%') {
       format++;
@@ -62,10 +59,29 @@ int kprintf(char* format, ...) {
   __builtin_va_end(argp);
 }
 
+int kprintf(char* format, ...) {
+  // TODO: don't use GCC builtins
+  __builtin_va_list argp;
+  __builtin_va_start(argp, format);
+  vkprintf(format, argp);
+}
+
+int vklog(char* format, __builtin_va_list argp) {
+  putstr("[k] ");
+  vkprintf(format, argp);
+}
+
+int klog(char* format, ...) {
+  __builtin_va_list argp;
+  __builtin_va_start(argp, format);
+  vklog(format, argp);
+}
+
 int kpanic(char* format, ...) {
   __builtin_va_list argp;
+  __builtin_va_start(argp, format);
   // disable interrupts
   asm volatile("cli");
-  kprintf("KERNEL PANIC\n");
-  kprintf(format, argp);
+  klog("KERNEL PANIC\n");
+  klog(format, argp);
 }

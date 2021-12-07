@@ -6,9 +6,9 @@
 
 void kernel_start() {
   clear_screen();
-  putstr_at("Kernel v0.\n", 0, 0);
-  kprintf("a number: %d\n", 42);
-  kprintf("a string: %s\n", "text");
+  klog("Kernel v0.\n", 0, 0);
+  klog("a number: %d\n", 42);
+  klog("a string: %s\n", "text");
   isr_install();
   //init_timer(1);
   // enable interrupts

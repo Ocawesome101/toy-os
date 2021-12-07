@@ -31,7 +31,7 @@ char* itoa(int n, char* s) {
   if (sign < 0) s[i++] = '-';
   s[i] = '\0';
 
-  return strrev(s);//, i);
+  return strrev(s);
 }
 
 int strlen(char* s) {
