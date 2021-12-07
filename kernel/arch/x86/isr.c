@@ -2,7 +2,7 @@
 #include "idt.h"
 #include "../../drivers/vga.h"
 #include "../../drivers/ports.h"
-#include "../../util.h"
+#include "../../klibc/string.h"
 
 isr_t interrupt_handlers[256];
 
@@ -116,7 +116,7 @@ char *exception_messages[] = {
 void isr_handler(registers_t r) {
   putstr("received interrupt: ");
   char s[3];
-  tostring(r.int_no, s);
+  itoa(r.int_no, &s);
   putstr(s);
   putstr("\n");
   putstr(exception_messages[r.int_no]);

@@ -1,5 +1,7 @@
-C_SOURCES = $(wildcard kernel/*.c kernel/drivers/*.c kernel/arch/x86/*.c)
-HEADERS = $(wildcard kernel/*.h kernel/drivers/*.h kernel/arch/x86/*.h)
+C_SOURCES = $(wildcard kernel/*.c kernel/drivers/*.c kernel/arch/x86/*.c \
+	kernel/klibc/*.c)
+HEADERS = $(wildcard kernel/*.h kernel/drivers/*.h kernel/arch/x86/*.h \
+	kernel/klibc/*.h)
 # Nice syntax for file extension replacement
 OBJ = ${C_SOURCES:.c=.o}
 

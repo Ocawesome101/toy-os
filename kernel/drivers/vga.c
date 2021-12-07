@@ -1,6 +1,6 @@
 // VGA!
 
-#include "../util.h"
+#include "../klibc/mem.h"
 #include "ports.h"
 #include "vga.h"
 
@@ -76,7 +76,7 @@ int vga_set_at_position(char c, int col, int row, unsigned char color) {
   // scroll if necessary
   if (offset >= VGA_ROWS * VGA_COLS * 2) {
     for (int i = 1; i < VGA_ROWS * 2; i++) {
-      memcopy(
+      memcpy(
           (unsigned char*)VGA_ADDRESS + get_offset(0, i),
           (unsigned char*)VGA_ADDRESS + get_offset(0, i - 1),
           VGA_COLS * 2);

@@ -1,7 +1,7 @@
 #ifndef KB_H
 #define KB_H
 
-#include "../types.h"
+#include "../klibc/types.h"
 
 void init_keyboard();
 

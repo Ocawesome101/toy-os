@@ -1,7 +1,7 @@
 #include "timer.h"
 #include "../../drivers/vga.h"
 #include "../../drivers/ports.h"
-#include "../../util.h"
+#include "../../klibc/string.h"
 #include "isr.h"
 
 u32 tick = 0;
@@ -11,7 +11,7 @@ static void timer_callback(registers_t regs) {
   putstr("tick: ");
 
   char tick_ascii[256];
-  tostring(tick, tick_ascii);
+  itoa(tick, &tick_ascii);
   putstr(tick_ascii);
   putstr("\n");
 }
